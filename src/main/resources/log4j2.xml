@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Configuration status="info">
+    <Properties>
+        <Property name="layout">%d [%t] %-5level %logger - %m%n</Property>
+        <Property name="logdir">D:\SLMORAWorkSpace\IntelliJProjects\MoraJavaFileAccess\logs</Property>
+    </Properties>
+
+    <Appenders>
+        <Console name="LogToConsole" target="SYSTEM_OUT">
+            <PatternLayout pattern="${layout}" />
+        </Console>
+<!--        <File name="LogToFile" fileName="${logdir}\mora-java-file-access-info.log" append="false">-->
+<!--            <PatternLayout pattern="${layout}"/>-->
+<!--        </File>-->
+        <RollingFile name="LogToFile" fileName="${logdir}\mora-java-file-access-info.log"
+                     filePattern="${logdir}/$${adte:yyy-MM-dd}/mora-java-file-access-info.%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="${layout}" />
+            <Policies>
+                <TimeBasedTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="1 MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="10" />
+        </RollingFile>
+        <Async name="Async">
+            <AppenderRef ref="LogToFile" />
+        </Async>
+<!--        <SMTP name="LogToEMail" -->
+<!--              subject="Error Log From Mora Java File Access"-->
+<!--              from="logs@slmora.com" -->
+<!--              to="error@slmora.com" -->
+<!--              dmtpUsername="abc" -->
+<!--              smtpPassword="123" -->
+<!--              bufferSize="100">-->
+<!--        </SMTP>-->
+    </Appenders>
+
+    <Loggers>
+        <Logger name="com.slmora" level="info" additivity="false" >
+            <AppenderRef ref="LogToConsole" />
+<!--            <AppenderRef ref="LogToFile" />-->
+            <AppenderRef ref="Async" />
+        </Logger>
+        <Root level="error">
+            <AppenderRef ref="LogToConsole" />
+            <AppenderRef ref="LogToFile" />
+<!--            <AppenderRef ref="LogToEMail" />-->
+        </Root>
+    </Loggers>
+</Configuration>

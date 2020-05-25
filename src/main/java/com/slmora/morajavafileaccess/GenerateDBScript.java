@@ -3,7 +3,7 @@
  * @Author: SLMORA
  * @DateTime: 5/21/2020 1:44 PM
  */
-package com.slmora.morajavafileaccess.test;
+package com.slmora.morajavafileaccess;
 
 import lombok.Data;
 import org.apache.commons.lang.StringUtils;

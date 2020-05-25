@@ -3,7 +3,10 @@
  * @Author: SLMORA
  * @DateTime: 5/21/2020 1:44 PM
  */
-package com.slmora.morajavafileaccess.test;
+package com.slmora.morajavafileaccess;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -28,6 +31,13 @@ import java.util.stream.Stream;
  * 1.0          5/21/2020      SLMORA                Initial Code
  */
 public class FileAccess {
+    final static Logger logger = LogManager.getLogger(FileAccess.class);
+
+    public void fileAccessTest(){
+        logger.info("The main() method is called");
+        logger.warn("Warning message");
+        logger.error("Error message");
+    }
     /**
      * Test the add() method with input values 1, 2 for expected 3
      * @param filePath as String Object with location of filter file
