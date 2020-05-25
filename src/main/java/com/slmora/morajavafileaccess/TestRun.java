@@ -22,9 +22,11 @@ import java.nio.file.StandardOpenOption;
  * ---------    ----------      ----------------    --------------------------------------------------------------------
  * 1.0          5/21/2020      SLMORA                Initial Code
  */
-public class TestRun {
-    public static void main(String[] args) {
-        GenerateDBScript generateDBScript=new GenerateDBScript();
+public class TestRun
+{
+    public static void main(String[] args)
+    {
+        GenerateDBScript generateDBScript = new GenerateDBScript();
 //        generateDBScript.setInFileID("D:\\SLMORAWorkSpace\\LTAWork\\ID.txt");
 //        generateDBScript.setInFileSortName("D:\\SLMORAWorkSpace\\LTAWork\\SNAME.txt");
 //        generateDBScript.setInFileDescription("D:\\SLMORAWorkSpace\\LTAWork\\DES.txt");

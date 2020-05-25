@@ -30,21 +30,26 @@ import java.util.stream.Stream;
  * ---------    ----------      ----------------    --------------------------------------------------------------------
  * 1.0          5/21/2020      SLMORA                Initial Code
  */
-public class FileAccess {
+public class FileAccess
+{
     final static Logger logger = LogManager.getLogger(FileAccess.class);
 
-    public void fileAccessTest(){
+    public void fileAccessTest()
+    {
         logger.info("The main() method is called");
         logger.warn("Warning message");
         logger.error("Error message");
     }
+
     /**
      * Test the add() method with input values 1, 2 for expected 3
+     *
      * @param filePath as String Object with location of filter file
      * @throws IOException with file notfound aor compatibility issue
      * @apiNote Read file using java 8 Stream
-     * */
-    public void readFileMode01(String filePath){
+     */
+    public void readFileMode01(String filePath)
+    {
         //read file into stream, try-with-resources
         try (Stream<String> fileStream = Files.lines(Paths.get(filePath))) {
 
@@ -56,7 +61,8 @@ public class FileAccess {
     }
 
 
-    public void readFileMode02(String filePath){
+    public void readFileMode02(String filePath)
+    {
         List<String> list = new ArrayList<>();
 
         try (Stream<String> fileStream = Files.lines(Paths.get(filePath))) {
@@ -78,7 +84,8 @@ public class FileAccess {
         list.forEach(System.out::println);
     }
 
-    public void readFileMode03(String filePath){
+    public void readFileMode03(String filePath)
+    {
         List<String> list = new ArrayList<>();
 
         try (BufferedReader br = Files.newBufferedReader(Paths.get(filePath))) {
@@ -93,7 +100,8 @@ public class FileAccess {
         list.forEach(System.out::println);
     }
 
-    public void readFileMode04(String filePath){
+    public void readFileMode04(String filePath)
+    {
 
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
 
@@ -107,11 +115,12 @@ public class FileAccess {
         }
     }
 
-    public void readFileMode05(String filePath){
+    public void readFileMode05(String filePath)
+    {
 
         try (Scanner scanner = new Scanner(new File(filePath))) {
 
-            while (scanner.hasNext()){
+            while (scanner.hasNext()) {
                 System.out.println(scanner.nextLine());
             }
 

@@ -31,7 +31,8 @@ import java.util.stream.Stream;
  * 1.0          5/21/2020      SLMORA                Initial Code
  */
 @Data
-public class GenerateDBScript {
+public class GenerateDBScript
+{
     private String outFileLocationLocal;
     private String outFileParamDescription;
     private String inFileID;
@@ -40,7 +41,8 @@ public class GenerateDBScript {
     private String inFileLocationLocalMode;
     private String inFileParamDescriptionMode;
 
-    private List readFileForContent(String filePath){
+    private List readFileForContent(String filePath)
+    {
         List<String> list = new ArrayList<>();
         try (Stream<String> fileStream = Files.lines(Paths.get(filePath))) {
             list = fileStream.collect(Collectors.toList());
@@ -50,20 +52,21 @@ public class GenerateDBScript {
         return list;
     }
 
-    public void generateScript(){
-        List<String> listID=readFileForContent(inFileID);
-        List<String> listSortName=readFileForContent(inFileSortName);
-        List<String> listDescription=readFileForContent(inFileDescription);
+    public void generateScript()
+    {
+        List<String> listID = readFileForContent(inFileID);
+        List<String> listSortName = readFileForContent(inFileSortName);
+        List<String> listDescription = readFileForContent(inFileDescription);
 
         try (PrintWriter writer = new PrintWriter(outFileLocationLocal);
-                PrintWriter writer2 = new PrintWriter(outFileLocationLocal)){
+             PrintWriter writer2 = new PrintWriter(outFileLocationLocal)) {
             writer.print("");
             writer2.print("");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
-        for (int i=0; i<listID.size(); i++){
+        for (int i = 0; i < listID.size(); i++) {
             writeContent(listID.get(i),
                     listSortName.get(i),
                     listDescription.get(i),
@@ -83,17 +86,18 @@ public class GenerateDBScript {
             String lineSortName,
             String lineDescription,
             String inFIle,
-            String outFile){
+            String outFile)
+    {
         List<String> list = new ArrayList<>();
-        try(Stream<String> fileStream = Files.lines(Paths.get(inFIle))){
+        try (Stream<String> fileStream = Files.lines(Paths.get(inFIle))) {
             list = fileStream
-                    .map(line -> line.replaceAll("999888999111",lineId))
-                    .map(line -> line.replaceAll("999888999112", StringUtils.leftPad(lineId,4,"0")))
-                    .map(line -> line.replaceAll("999888999222",lineDescription))
-                    .map(line -> line.replaceAll("999888999333",lineSortName))
+                    .map(line -> line.replaceAll("999888999111", lineId))
+                    .map(line -> line.replaceAll("999888999112", StringUtils.leftPad(lineId, 4, "0")))
+                    .map(line -> line.replaceAll("999888999222", lineDescription))
+                    .map(line -> line.replaceAll("999888999333", lineSortName))
                     .collect(Collectors.toList());
-            Files.write(Paths.get(outFile),list, StandardOpenOption.APPEND);
-        }catch (IOException e){
+            Files.write(Paths.get(outFile), list, StandardOpenOption.APPEND);
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
