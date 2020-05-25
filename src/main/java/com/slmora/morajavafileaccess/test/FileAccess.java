@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * This Class created for
+ * This Class created for modify all jva base fie read and write actions
  *
  * @Author: SLMORA
  * @DateTime: 5/21/2020 1:44 PM
@@ -27,7 +27,7 @@ import java.util.stream.Stream;
  * ---------    ----------      ----------------    --------------------------------------------------------------------
  * 1.0          5/21/2020      SLMORA                Initial Code
  */
-public class TestFileRead {
+public class FileAccess {
     /**
      * Test the add() method with input values 1, 2 for expected 3
      * @param filePath as String Object with location of filter file
@@ -44,6 +44,7 @@ public class TestFileRead {
             e.printStackTrace();
         }
     }
+
 
     public void readFileMode02(String filePath){
         List<String> list = new ArrayList<>();
