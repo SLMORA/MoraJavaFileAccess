@@ -62,6 +62,49 @@ public class FileAccess
     }
 
     /**
+     * Console print full content of given file
+     *
+     * @param filePath as String Object with location of filter file
+     * @throws IOException with file notfound aor compatibility issue
+     * @apiNote Print full content of given file by reading using Stream
+     */
+    public void printFileFullContentToListUsingBufferedReader(String filePath)
+    {
+        //read file into BufferedReader, try-with-resources
+        try (BufferedReader br = Files.newBufferedReader(Paths.get(filePath))) {
+            br.lines().forEach(System.out::println);
+        //with while loop
+//            String line = null;
+//            while ((line = br.readLine()) != null){
+//                System.out.println(line);
+//            }
+        } catch (IOException e) {
+            LOGGER.error(ExceptionUtils.getFullStackTrace(e));
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Console print full content of given file
+     *
+     * @param filePath as String Object with location of filter file
+     * @throws IOException with file notfound aor compatibility issue
+     * @apiNote Print full content of given file by reading using Stream
+     */
+    public void printFileFullContentToListUsingScanner(String filePath)
+    {
+        //read file into Scanner, try-with-resources
+        try (Scanner scanner = new Scanner(new File(filePath))) {
+            while (scanner.hasNext()) {
+                System.out.println(scanner.nextLine());
+            }
+        } catch (IOException e) {
+            LOGGER.error(ExceptionUtils.getFullStackTrace(e));
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * Read file in given path and return it with List object
      *
      * @param filePath as String Object with location of filter file
@@ -167,17 +210,27 @@ public class FileAccess
         }
     }
 
-    public void readFileMode05(String filePath)
+    /**
+     * Read file in given path and return it with List object
+     *
+     * @param filePath as String Object with location of filter file
+     * @return List<String> Object will return with file content
+     * @throws IOException with file notfound aor compatibility issue
+     * @apiNote Read file and collect full content in to list using Stream
+     */
+    public List getFileFullContentToListUsingScanner(String filePath)
     {
-
+        List<String> list = new ArrayList<>();
+        //read file into Scanner, try-with-resources
         try (Scanner scanner = new Scanner(new File(filePath))) {
-
             while (scanner.hasNext()) {
-                System.out.println(scanner.nextLine());
+                list.add(scanner.nextLine());
             }
-
         } catch (IOException e) {
+            LOGGER.error(ExceptionUtils.getFullStackTrace(e));
             e.printStackTrace();
+        } finally {
+          return list;
         }
     }
 }
