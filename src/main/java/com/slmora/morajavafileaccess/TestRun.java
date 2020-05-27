@@ -37,7 +37,6 @@ public class TestRun
 //
 //        generateDBScript.generateScript();
 
-        new FileAccess().fileAccessTest();
 
     }
 }

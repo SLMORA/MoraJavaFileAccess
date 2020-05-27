@@ -5,6 +5,7 @@
  */
 package com.slmora.morajavafileaccess;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.*;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * This Test Class created for testing com.slmora.morajavafileaccess.FileAccess
@@ -93,18 +95,23 @@ public class FileAccessTest
      * */
     @Test
     @DisplayName("Test PrintWriter.close() option to clear the file")
-    @EnabledOnJre(JRE.JAVA_14)
+//    @EnabledOnJre(JRE.JAVA_14)
     public void testPrintWriterClose(){
         List<String> list = new ArrayList<>();
+        String s = null;
         try (Stream<String> fileStream = Files.lines(TEST_FILE_PATH)){
             new PrintWriter("D:\\SLMORAWorkSpace\\IntelliJProjects\\MoraJavaFileAccess\\MOD1.txt").close();
             list = fileStream.collect(Collectors.toList());
             assertEquals(0,list.size());
         } catch (FileNotFoundException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error(ExceptionUtils.getMessage(e));
+            System.out.println("TTS : "+ExceptionUtils.getMessage(e));
+            fail(e.getMessage());
             e.printStackTrace();
         } catch (IOException e) {
-            LOGGER.error(e.getMessage());
+            LOGGER.error(ExceptionUtils.getFullStackTrace(e));
+            System.out.println("TTS : "+ExceptionUtils.getFullStackTrace(e));
+            fail(e.getMessage());
             e.printStackTrace();
         }
 

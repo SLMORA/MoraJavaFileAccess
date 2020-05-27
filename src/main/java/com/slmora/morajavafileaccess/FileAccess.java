@@ -5,6 +5,8 @@
  */
 package com.slmora.morajavafileaccess;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,86 +34,136 @@ import java.util.stream.Stream;
  */
 public class FileAccess
 {
-    final static Logger logger = LogManager.getLogger(FileAccess.class);
+    final static Logger LOGGER = LogManager.getLogger(FileAccess.class);
 
-    public void fileAccessTest()
+    public void loggerTest()
     {
-        logger.info("The main() method is called");
-        logger.warn("Warning message");
-        logger.error("Error message");
+        LOGGER.info("The main() method is called");
+        LOGGER.warn("Warning message");
+        LOGGER.error("Error message");
     }
 
     /**
-     * Test the add() method with input values 1, 2 for expected 3
+     * Console print full content of given file
      *
      * @param filePath as String Object with location of filter file
      * @throws IOException with file notfound aor compatibility issue
-     * @apiNote Read file using java 8 Stream
+     * @apiNote Print full content of given file by reading using Stream
      */
-    public void readFileMode01(String filePath)
+    public void printFileFullContentToListUsingStream(String filePath)
     {
         //read file into stream, try-with-resources
         try (Stream<String> fileStream = Files.lines(Paths.get(filePath))) {
-
             fileStream.forEach(System.out::println);
-
         } catch (IOException e) {
+            LOGGER.error(ExceptionUtils.getFullStackTrace(e));
             e.printStackTrace();
         }
     }
 
-
-    public void readFileMode02(String filePath)
+    /**
+     * Read file in given path and return it with List object
+     *
+     * @param filePath as String Object with location of filter file
+     * @return List<String> Object will return with file content
+     * @throws IOException with file notfound aor compatibility issue
+     * @apiNote Read file and collect full content in to list using Stream
+     */
+    public List getFileFullContentToListUsingStream(String filePath)
     {
         List<String> list = new ArrayList<>();
-
+        //read file into stream, try-with-resources
         try (Stream<String> fileStream = Files.lines(Paths.get(filePath))) {
-
-            //1. filter line 3
-            //2. convert all content to upper case
-            //3. convert it into a List
-//            list = fileStream
-//                    .filter(line -> !line.startsWith("line3"))
-//                    .map(String::toUpperCase)
-//                    .collect(Collectors.toList());
-
             list = fileStream.collect(Collectors.toList());
-
         } catch (IOException e) {
+            LOGGER.error(ExceptionUtils.getFullStackTrace(e));
             e.printStackTrace();
+        }finally {
+            return list;
         }
-
-        list.forEach(System.out::println);
     }
 
-    public void readFileMode03(String filePath)
+    /**
+     * Read file in given path and return filtered out put in to List object
+     * Filter each line not starts with given startsWith value
+     * Map value 10 with given numberReplace value with 4 leftpad
+     * Map all Characters in to UpperCase
+     *
+     * @param filePath for resource file, startsWith filter lines, numberReplace for replacing number as String Objects
+     * @return List<String> Object will return with file content
+     * @throws IOException with file notfound aor compatibility issue
+     * @apiNote Read file and collect full content in to list using Stream
+     */
+    public List getFilteredFileContentToListUsingStream(String filePath, String startsWith, String numberReplace)
     {
         List<String> list = new ArrayList<>();
-
-        try (BufferedReader br = Files.newBufferedReader(Paths.get(filePath))) {
-
-            //br returns as stream and convert it into a List
-            list = br.lines().collect(Collectors.toList());
-
+        //read file into stream, try-with-resources
+        try (Stream<String> fileStream = Files.lines(Paths.get(filePath))) {
+            list = fileStream
+                    .filter(line -> !line.startsWith(startsWith))
+                    .map(line -> line.replaceAll("10", StringUtils.leftPad(numberReplace, 4, "0")))
+                    .map(String::toUpperCase)
+                    .collect(Collectors.toList());
         } catch (IOException e) {
+            LOGGER.error(ExceptionUtils.getFullStackTrace(e));
             e.printStackTrace();
+        }finally {
+            return list;
         }
-
-        list.forEach(System.out::println);
     }
 
-    public void readFileMode04(String filePath)
+    /**
+     * Read file in given path and return it with List object
+     *
+     * @param filePath as String Object with location of filter file
+     * @return List<String> Object will return with file content
+     * @throws IOException with file notfound aor compatibility issue
+     * @apiNote Read file and collect full content in to list using Stream
+     */
+    public List getFileFullContentToListUsingBufferedReader(String filePath)
     {
-
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-
-            String line;
-            while ((line = br.readLine()) != null) {
-                System.out.println(line);
-            }
-
+        List<String> list = new ArrayList<>();
+        //read file into BufferedReader, try-with-resources
+        try (BufferedReader br = Files.newBufferedReader(Paths.get(filePath))) {
+            list = br.lines().collect(Collectors.toList());
         } catch (IOException e) {
+            LOGGER.error(ExceptionUtils.getFullStackTrace(e));
             e.printStackTrace();
+        }finally {
+            return list;
+        }
+    }
+
+    /**
+     * Read file in given path and return filtered out put in to List object
+     * Filter each line not starts with given startsWith value
+     * Map value 10 with given numberReplace value with 4 leftpad
+     * Map all Characters in to UpperCase
+     *
+     * @param filePath for resource file, startsWith filter lines, numberReplace for replacing number as String Objects
+     * @return List<String> Object will return with file content
+     * @throws IOException with file notfound aor compatibility issue
+     * @apiNote Read file and collect full content in to list using Stream
+     */
+    public List getFilteredFileContentToListUsingBufferedReader(String filePath, String startsWith, String numberReplace)
+    {
+        List<String> list = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line = null;
+            while ((line = br.readLine()) != null) {
+                if(!line.startsWith(startsWith)){
+                    if(line.contains("10")){
+                        line = line.replaceAll("10", StringUtils.leftPad(numberReplace, 4, "0"));
+                    }
+                    line = line.toUpperCase();
+                    list.add(line);
+                }
+            }
+        } catch (IOException e) {
+            LOGGER.error(ExceptionUtils.getFullStackTrace(e));
+            e.printStackTrace();
+        } finally {
+            return list;
         }
     }
 
