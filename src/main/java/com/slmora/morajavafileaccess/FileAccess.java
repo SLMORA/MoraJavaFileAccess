@@ -10,10 +10,8 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -48,9 +46,9 @@ public class FileAccess
      *
      * @param filePath as String Object with location of filter file
      * @throws IOException with file notfound aor compatibility issue
-     * @apiNote Print full content of given file by reading using Stream
+     * @apiNote Print full content of given file by reading using Stream, File.lines() and Path Print with method reference
      */
-    public void printFileFullContentToListUsingStream(String filePath)
+    public void printFileFullContentUsingStream(String filePath)
     {
         //read file into stream, try-with-resources
         try (Stream<String> fileStream = Files.lines(Paths.get(filePath))) {
@@ -66,9 +64,9 @@ public class FileAccess
      *
      * @param filePath as String Object with location of filter file
      * @throws IOException with file notfound aor compatibility issue
-     * @apiNote Print full content of given file by reading using Stream
+     * @apiNote Print full content of given file by reading using Stream, File.newBufferedReader() and Path Print with method reference
      */
-    public void printFileFullContentToListUsingBufferedReader(String filePath)
+    public void printFileFullContentUsingBufferedReader(String filePath)
     {
         //read file into BufferedReader, try-with-resources
         try (BufferedReader br = Files.newBufferedReader(Paths.get(filePath))) {
@@ -89,7 +87,29 @@ public class FileAccess
      *
      * @param filePath as String Object with location of filter file
      * @throws IOException with file notfound aor compatibility issue
-     * @apiNote Print full content of given file by reading using Stream
+     * @apiNote Print full content of given file by reading using BufferedReader, FileReader and File Print with while loop
+     */
+    public void printFileFullContentUsingBufferedReaderFileReader(String filePath)
+    {
+        //read file into BufferedReader, try-with-resources
+        try (BufferedReader br = new BufferedReader(new FileReader(new File(filePath)))) {
+            //with while loop
+            String line = null;
+            while ((line = br.readLine()) != null){
+                System.out.println(line);
+            }
+        } catch (IOException e) {
+            LOGGER.error(ExceptionUtils.getFullStackTrace(e));
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Console print full content of given file
+     *
+     * @param filePath as String Object with location of filter file
+     * @throws IOException with file notfound aor compatibility issue
+     * @apiNote Print full content of given file by reading using Scanner and File Print with while loop
      */
     public void printFileFullContentToListUsingScanner(String filePath)
     {
@@ -110,13 +130,35 @@ public class FileAccess
      * @param filePath as String Object with location of filter file
      * @return List<String> Object will return with file content
      * @throws IOException with file notfound aor compatibility issue
-     * @apiNote Read file and collect full content in to list using Stream
+     * @apiNote Read file and collect full content in to list using Stream, File.lines() and Path add to list with Stream collectors
      */
     public List getFileFullContentToListUsingStream(String filePath)
     {
         List<String> list = new ArrayList<>();
         //read file into stream, try-with-resources
         try (Stream<String> fileStream = Files.lines(Paths.get(filePath))) {
+            list = fileStream.collect(Collectors.toList());
+        } catch (IOException e) {
+            LOGGER.error(ExceptionUtils.getFullStackTrace(e));
+            e.printStackTrace();
+        }finally {
+            return list;
+        }
+    }
+
+    /**
+     * Read file with UTF-8 encoding in given path and return it with List object
+     *
+     * @param filePath as String Object with location of filter file
+     * @return List<String> Object will return with file content
+     * @throws IOException with file notfound aor compatibility issue
+     * @apiNote Read file and collect full content in to list using Stream, File.lines() and Path with Decode for UTF-8 add to list with Stream collectors
+     */
+    public List getFileFullContentInUTF8ToListUsingStream(String filePath)
+    {
+        List<String> list = new ArrayList<>();
+        //read file into stream, try-with-resources
+        try (Stream<String> fileStream = Files.lines(Paths.get(filePath),StandardCharsets.UTF_8)) {
             list = fileStream.collect(Collectors.toList());
         } catch (IOException e) {
             LOGGER.error(ExceptionUtils.getFullStackTrace(e));
@@ -232,6 +274,167 @@ public class FileAccess
         } finally {
           return list;
         }
+    }
+
+    /**
+     * Read file in given path and return it with String object
+     * This allow upto Java 7
+     *
+     * @param filePath as String Object with location of filter file
+     * @return String Object will return with file content
+     * @throws IOException with file notfound aor compatibility issue
+     * @apiNote Read file and collect full content in to one String Object
+     */
+    public String getFileFullContentInAllBytesToString(String filePath)
+    {
+        String content = null;
+        try {
+            content = new String (Files.readAllBytes(Paths.get(filePath)));
+        } catch (IOException e) {
+            LOGGER.error(ExceptionUtils.getFullStackTrace(e));
+            e.printStackTrace();
+        }finally {
+            return content;
+        }
+    }
+
+    /**
+     * Read file with UTF-8 encoding in given path and return it with StringBuilder object
+     *
+     * @param filePath as String Object with location of filter file
+     * @return List<String> Object will return with file content
+     * @throws IOException with file notfound aor compatibility issue
+     * @apiNote Read file and collect full content in to StringBuilder using Stream
+     */
+    public StringBuilder getFileFullContentInUTF8ToStringBuilderUsingStream(String filePath)
+    {
+        StringBuilder contentBuilder = new StringBuilder();
+        //read file into stream, try-with-resources
+        try {
+            Stream<String> fileStream = Files.lines(Paths.get(filePath),StandardCharsets.UTF_8);
+            fileStream.forEach(line -> contentBuilder.append(line).append("\n"));
+            fileStream.close();
+        } catch (IOException e) {
+            LOGGER.error(ExceptionUtils.getFullStackTrace(e));
+            e.printStackTrace();
+        }finally {
+//            return contentBuilder.toString(); //this can use for return single string object
+            return contentBuilder;
+        }
+    }
+
+    /**
+     * Read file with UTF-8 encoding in given path and return it with StringBuilder object
+     *
+     * @param filePath as String Object with location of filter file
+     * @return List<String> Object will return with file content
+     * @throws IOException with file notfound aor compatibility issue
+     * @apiNote Read file and collect full content in to StringBuilder using Stream
+     */
+    public StringBuilder getFileFullContentInUTF8ToStringBuilderUsingReadAllLines(String filePath)
+    {
+        StringBuilder contentBuilder = new StringBuilder(1024);
+        try {
+            List lines = Files.readAllLines(Paths.get(filePath),StandardCharsets.UTF_8);
+            lines.forEach(line -> contentBuilder.append(line).append("\n"));
+        } catch (IOException e) {
+            LOGGER.error(ExceptionUtils.getFullStackTrace(e));
+            e.printStackTrace();
+        }finally {
+//            return contentBuilder.toString(); //this can use for return single string object
+            return contentBuilder;
+        }
+    }
+
+    /**
+     * Read file with UTF-8 encoding in given path and return it with StringBuilder object
+     *
+     * @param filePath as String Object with location of filter file
+     * @return List<String> Object will return with file content
+     * @throws IOException with file notfound aor compatibility issue
+     * @apiNote Read file and collect full content in to StringBuilder using Stream
+     */
+    public StringBuilder getFileFullContentInUTF8ToStringBuilderUsingInputStream(String filePath, String startsWith, String numberReplace)
+    {
+        StringBuilder contentBuilder = new StringBuilder(1024);
+
+        try {
+            InputStream iStream = new FileInputStream(filePath);
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(iStream));
+            reader.lines().forEach(line -> contentBuilder.append(line).append("\n"));
+
+            String line = reader.readLine();
+            while (line != null) {
+                if(!line.startsWith(startsWith)){
+                    if(line.contains("10")){
+                        line = line.replaceAll("10", StringUtils.leftPad(numberReplace, 4, "0"));
+                    }
+                    line = line.toUpperCase();
+                    contentBuilder.append(line).append("\n");
+                }
+                line = reader.readLine();
+            }
+        } catch (IOException e) {
+            LOGGER.error(ExceptionUtils.getFullStackTrace(e));
+            e.printStackTrace();
+        }finally {
+//            return contentBuilder.toString(); //this can use for return single string object
+            return contentBuilder;
+        }
+    }
+
+    /**
+     * Read file in given path and return it with String object
+     * This allow upto Java 8
+     *
+     * @param filePath as String Object with location of filter file
+     * @return String Object will return with file content
+     * @throws IOException with file notfound aor compatibility issue
+     * @apiNote Read file and all characters content in to one String Object
+     * @Note Files.lines() method doesn't include line-termination character. If we want to read all text from a file
+     * in to a String we can use this
+     */
+    public String getFileAllCharactersToString(String filePath)
+    {
+        String content = null;
+        //read file into BufferedReader, try-with-resources
+        try {
+            content = Files.lines(Paths.get(filePath)).collect(Collectors.joining(System.lineSeparator()));
+        } catch (IOException e) {
+            LOGGER.error(ExceptionUtils.getFullStackTrace(e));
+            e.printStackTrace();
+        } finally {
+            return content;
+        }
+    }
+
+    /**
+     * Read file in given path and return it with String object
+     * This allow upto Java 8
+     *
+     * @param inputStream as String Object with location of filter file
+     * @return String Object will return with file content
+     * @throws IOException with file notfound aor compatibility issue
+     * @apiNote Read file and all characters content in to one String Object
+     * @Note Files.lines() method doesn't include line-termination character. If we want to read all text from a file
+     * in to a String we can use this
+     */
+    public String readFromInputStream(InputStream inputStream)
+    {
+        StringBuilder resultStringBuilder = new StringBuilder();
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                resultStringBuilder.append(line).append("\n");
+            }
+        } catch (IOException e) {
+            LOGGER.error(ExceptionUtils.getFullStackTrace(e));
+            e.printStackTrace();
+        } finally {
+            return resultStringBuilder.toString();
+        }
+
     }
 }
 /**

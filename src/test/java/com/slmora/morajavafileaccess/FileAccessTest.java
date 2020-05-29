@@ -12,9 +12,7 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.EnabledOnJre;
 import org.junit.jupiter.api.condition.JRE;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -23,8 +21,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * This Test Class created for testing com.slmora.morajavafileaccess.FileAccess
@@ -44,6 +41,10 @@ public class FileAccessTest
     final static Logger LOGGER = LogManager.getLogger(FileAccess.class);
 
     Path TEST_FILE_PATH;
+    String TEST_FILE_LOCATION;
+    String TEST_OUT_PUT_STRING;
+    List<String> TEST_OUT_PUT_LIST;
+    FileAccess FILE_ACCESS;
 
     /**
      * Runs this method before initialize this test class
@@ -63,10 +64,15 @@ public class FileAccessTest
     {
         this.testInfo =  testInfo;
         this.testReporter = testReporter;
-        testReporter.publishEntry("Running " + testInfo.getDisplayName() + "with tags " + testInfo.getTags());
+        testReporter.publishEntry("Running " + testInfo.getDisplayName() + "with tags " + testInfo.getTags() + "\n");
 
-        this.TEST_FILE_PATH = Paths.get("D:\\SLMORAWorkSpace\\IntelliJProjects\\MoraJavaFileAccess\\MOD1.txt");
-
+        this.TEST_FILE_PATH = Paths.get("D:\\SLMORAWorkSpace\\IntelliJProjects\\MoraJavaFileAccess\\MOD_1.txt");
+        this.TEST_FILE_LOCATION = "D:\\SLMORAWorkSpace\\IntelliJProjects\\MoraJavaFileAccess\\MOD_1.txt";
+        this.TEST_OUT_PUT_STRING = "Hello, world1!\nHello, world2!";
+        this.TEST_OUT_PUT_LIST = new ArrayList();
+        this.TEST_OUT_PUT_LIST.add("Hello, world1!");
+        this.TEST_OUT_PUT_LIST.add("Hello, world2!");
+        this.FILE_ACCESS = new FileAccess();
     }
 
     /**
@@ -87,6 +93,103 @@ public class FileAccessTest
     public static void AfterAllInit()
     {
         System.out.println("After All Initiated........");
+    }
+
+    /**
+     * This method runs all print methods in FileAccess class
+     * printFileFullContentUsingStream(String filePath)
+     * printFileFullContentUsingBufferedReader(String filePath)
+     * printFileFullContentUsingBufferedReaderFileReader(String filePath)
+     * printFileFullContentToListUsingScanner(String filePath)
+     * All these methods are void methods
+     * */
+    @Nested
+    @DisplayName("Test All Print Methods")
+    class TestPrintMethods{
+        /**
+         * This method runs printFileFullContentUsingStream(String filePath) methods in FileAccess class
+         * This id void method
+         * */
+        @Test
+        @Tag("READ")
+        @Tag("PRINT")
+        @DisplayName("Test printFileFullContentUsingStream(String filePath)")
+        public void testPrintMethod01(){
+            FILE_ACCESS.printFileFullContentUsingStream(TEST_FILE_LOCATION);
+        }
+
+        /**
+         * This method runs printFileFullContentUsingBufferedReader(String filePath) methods in FileAccess class
+         * This id void method
+         * */
+        @Test
+        @Tag("READ")
+        @Tag("PRINT")
+        @DisplayName("Test printFileFullContentUsingBufferedReader(String filePath)")
+        public void testPrintMethod02(){
+            FILE_ACCESS.printFileFullContentUsingBufferedReader(TEST_FILE_LOCATION);
+        }
+
+        /**
+         * This method runs printFileFullContentUsingBufferedReaderFileReader(String filePath) methods in FileAccess class
+         * This id void method
+         * */
+        @Test
+        @Tag("READ")
+        @Tag("PRINT")
+        @DisplayName("Test printFileFullContentUsingBufferedReaderFileReader(String filePath)")
+        public void testPrintMethod03(){
+            FILE_ACCESS.printFileFullContentUsingBufferedReaderFileReader(TEST_FILE_LOCATION);
+        }
+
+        /**
+         * This method runs printFileFullContentToListUsingScanner(String filePath) methods in FileAccess class
+         * This id void method
+         * */
+        @Test
+        @Tag("READ")
+        @Tag("PRINT")
+        @DisplayName("Test printFileFullContentToListUsingScanner(String filePath)")
+        public void testPrintMethod04(){
+            FILE_ACCESS.printFileFullContentToListUsingScanner(TEST_FILE_LOCATION);
+        }
+    }
+
+    /**
+     * This method runs all get file content in to List Object methods in FileAccess class
+     * getFileFullContentToListUsingStream(String filePath)
+     * printFileFullContentUsingBufferedReader(String filePath)
+     * printFileFullContentUsingBufferedReaderFileReader(String filePath)
+     * printFileFullContentToListUsingScanner(String filePath)
+     * All these methods are void methods
+     * */
+    @Nested
+    @DisplayName("Test All Read for List Methods")
+    class TestGetList{
+
+        /**
+         * This method runs getFileFullContentToListUsingStream(String filePath) methods in FileAccess class
+         * This compare for expected TEST_OUT_PUT_LIST
+         * */
+        @Test
+        @Tag("READ")
+        @Tag("LIST")
+        @DisplayName("Test getFileFullContentToListUsingStream(String filePath)")
+        public void testGetListMethod01(){
+            assertIterableEquals(TEST_OUT_PUT_LIST, FILE_ACCESS.getFileFullContentToListUsingStream(TEST_FILE_LOCATION));
+        }
+
+        /**
+         * This method runs getFileFullContentInUTF8ToListUsingStream(String filePath) methods in FileAccess class
+         * This compare for expected TEST_OUT_PUT_LIST
+         * */
+        @Test
+        @Tag("READ")
+        @Tag("LIST")
+        @DisplayName("Test getFileFullContentInUTF8ToListUsingStream(String filePath)")
+        public void testGetListMethod02(){
+            assertIterableEquals(TEST_OUT_PUT_LIST, FILE_ACCESS.getFileFullContentInUTF8ToListUsingStream(TEST_FILE_LOCATION));
+        }
     }
 
     /**
@@ -115,6 +218,24 @@ public class FileAccessTest
             e.printStackTrace();
         }
 
+    }
+
+    @Test
+    public void givenFileNameAsAbsolutePath_whenUsingClasspath_thenFileData() {
+        String expectedData = "Hello, world!";
+        FileAccess fileAccess = new FileAccess();
+
+        Class clazz = FileAccess.class;
+//        InputStream inputStream = clazz.getResourceAsStream("/MOD_1.txt");
+        InputStream inputStream = null;
+        try {
+            inputStream = new FileInputStream("D:\\SLMORAWorkSpace\\IntelliJProjects\\MoraJavaFileAccess\\src\\main\\java\\com\\slmora\\morajavafileaccess\\MOD_1.txt");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        String data = fileAccess.readFromInputStream(inputStream);
+
+        assertEquals(data, expectedData);
     }
 
 }

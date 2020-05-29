@@ -54,9 +54,10 @@ public class GenerateDBScript
 
     public void generateScript()
     {
-        List<String> listID = readFileForContent(inFileID);
-        List<String> listSortName = readFileForContent(inFileSortName);
-        List<String> listDescription = readFileForContent(inFileDescription);
+        FileAccess fileAccess = new FileAccess();
+        List<String> listID = fileAccess.getFileFullContentToListUsingStream(inFileID);
+        List<String> listSortName = fileAccess.getFileFullContentToListUsingStream(inFileSortName);
+        List<String> listDescription = fileAccess.getFileFullContentToListUsingStream(inFileDescription);
 
         try (PrintWriter writer = new PrintWriter(outFileLocationLocal);
              PrintWriter writer2 = new PrintWriter(outFileLocationLocal)) {
