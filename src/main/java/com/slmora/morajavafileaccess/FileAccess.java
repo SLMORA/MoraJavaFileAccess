@@ -177,7 +177,7 @@ public class FileAccess
      * @param filePath for resource file, startsWith filter lines, numberReplace for replacing number as String Objects
      * @return List<String> Object will return with file content
      * @throws IOException with file notfound aor compatibility issue
-     * @apiNote Read file and collect full content in to list using Stream
+     * @apiNote Read file and collect full content in to list using Stream, File.lines() and Path add to list with Stream collectors
      */
     public List getFilteredFileContentToListUsingStream(String filePath, String startsWith, String numberReplace)
     {
@@ -203,7 +203,7 @@ public class FileAccess
      * @param filePath as String Object with location of filter file
      * @return List<String> Object will return with file content
      * @throws IOException with file notfound aor compatibility issue
-     * @apiNote Read file and collect full content in to list using Stream
+     * @apiNote Read file and collect full content in to list using Stream, File.newBufferedReader() and Path add to list with Stream collectors
      */
     public List getFileFullContentToListUsingBufferedReader(String filePath)
     {
@@ -228,7 +228,7 @@ public class FileAccess
      * @param filePath for resource file, startsWith filter lines, numberReplace for replacing number as String Objects
      * @return List<String> Object will return with file content
      * @throws IOException with file notfound aor compatibility issue
-     * @apiNote Read file and collect full content in to list using Stream
+     * @apiNote Read file and collect full content in to list using Stream, BufferedReader and FileReader add to list with collect in while loop
      */
     public List getFilteredFileContentToListUsingBufferedReader(String filePath, String startsWith, String numberReplace)
     {
@@ -258,7 +258,7 @@ public class FileAccess
      * @param filePath as String Object with location of filter file
      * @return List<String> Object will return with file content
      * @throws IOException with file notfound aor compatibility issue
-     * @apiNote Read file and collect full content in to list using Stream
+     * @apiNote Read file and collect full content in to list using Scanner and File add to list with collect in while loop
      */
     public List getFileFullContentToListUsingScanner(String filePath)
     {
@@ -302,9 +302,9 @@ public class FileAccess
      * Read file with UTF-8 encoding in given path and return it with StringBuilder object
      *
      * @param filePath as String Object with location of filter file
-     * @return List<String> Object will return with file content
+     * @return StringBuilder Object will return with file content
      * @throws IOException with file notfound aor compatibility issue
-     * @apiNote Read file and collect full content in to StringBuilder using Stream
+     * @apiNote Read file and collect full content in to one StringBuilder Object using Stream
      */
     public StringBuilder getFileFullContentInUTF8ToStringBuilderUsingStream(String filePath)
     {
@@ -329,7 +329,7 @@ public class FileAccess
      * @param filePath as String Object with location of filter file
      * @return List<String> Object will return with file content
      * @throws IOException with file notfound aor compatibility issue
-     * @apiNote Read file and collect full content in to StringBuilder using Stream
+     * @apiNote Read file and collect full content in to one StringBuilder Object using Stream
      */
     public StringBuilder getFileFullContentInUTF8ToStringBuilderUsingReadAllLines(String filePath)
     {
@@ -360,9 +360,7 @@ public class FileAccess
 
         try {
             InputStream iStream = new FileInputStream(filePath);
-
             BufferedReader reader = new BufferedReader(new InputStreamReader(iStream));
-            reader.lines().forEach(line -> contentBuilder.append(line).append("\n"));
 
             String line = reader.readLine();
             while (line != null) {
@@ -420,7 +418,7 @@ public class FileAccess
      * @Note Files.lines() method doesn't include line-termination character. If we want to read all text from a file
      * in to a String we can use this
      */
-    public String readFromInputStream(InputStream inputStream)
+    public StringBuilder readFromInputStream(InputStream inputStream)
     {
         StringBuilder resultStringBuilder = new StringBuilder();
         try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
@@ -432,8 +430,19 @@ public class FileAccess
             LOGGER.error(ExceptionUtils.getFullStackTrace(e));
             e.printStackTrace();
         } finally {
-            return resultStringBuilder.toString();
+            return resultStringBuilder;
         }
+//        StringBuilder contentBuilder = new StringBuilder(1024);
+//        try {
+//            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+//            reader.lines().forEach(line -> contentBuilder.append(line).append("\n"));
+//        } catch (IOException e) {
+//            LOGGER.error(ExceptionUtils.getFullStackTrace(e));
+//            e.printStackTrace();
+//        }finally {
+////            return contentBuilder.toString(); //this can use for return single string object
+//            return contentBuilder;
+//        }
 
     }
 }

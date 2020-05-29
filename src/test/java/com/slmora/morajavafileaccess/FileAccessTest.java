@@ -43,8 +43,11 @@ public class FileAccessTest
     Path TEST_FILE_PATH;
     String TEST_FILE_LOCATION;
     String TEST_OUT_PUT_STRING;
+    String TEST_OUT_PUT_STRING_FILTER;
     List<String> TEST_OUT_PUT_LIST;
+    List<String> TEST_OUT_PUT_LIST_FILTER;
     FileAccess FILE_ACCESS;
+
 
     /**
      * Runs this method before initialize this test class
@@ -68,10 +71,15 @@ public class FileAccessTest
 
         this.TEST_FILE_PATH = Paths.get("D:\\SLMORAWorkSpace\\IntelliJProjects\\MoraJavaFileAccess\\MOD_1.txt");
         this.TEST_FILE_LOCATION = "D:\\SLMORAWorkSpace\\IntelliJProjects\\MoraJavaFileAccess\\MOD_1.txt";
-        this.TEST_OUT_PUT_STRING = "Hello, world1!\nHello, world2!";
+        this.TEST_OUT_PUT_STRING = "hi Hello, world1!\nHello, world2!\nhi Hello, world10!";
+        this.TEST_OUT_PUT_STRING_FILTER = "HI HELLO, WORLD1!\nHI HELLO, WORLD0005!";
         this.TEST_OUT_PUT_LIST = new ArrayList();
-        this.TEST_OUT_PUT_LIST.add("Hello, world1!");
+        this.TEST_OUT_PUT_LIST.add("hi Hello, world1!");
         this.TEST_OUT_PUT_LIST.add("Hello, world2!");
+        this.TEST_OUT_PUT_LIST.add("hi Hello, world10!");
+        this.TEST_OUT_PUT_LIST_FILTER = new ArrayList();
+        this.TEST_OUT_PUT_LIST_FILTER.add("HI HELLO, WORLD1!");
+        this.TEST_OUT_PUT_LIST_FILTER.add("HI HELLO, WORLD0005!");
         this.FILE_ACCESS = new FileAccess();
     }
 
@@ -158,10 +166,12 @@ public class FileAccessTest
     /**
      * This method runs all get file content in to List Object methods in FileAccess class
      * getFileFullContentToListUsingStream(String filePath)
-     * printFileFullContentUsingBufferedReader(String filePath)
-     * printFileFullContentUsingBufferedReaderFileReader(String filePath)
-     * printFileFullContentToListUsingScanner(String filePath)
-     * All these methods are void methods
+     * getFileFullContentInUTF8ToListUsingStream(String filePath)
+     * getFilteredFileContentToListUsingStream(String filePath, String startsWith, String numberReplace)
+     * getFileFullContentToListUsingBufferedReader(String filePath)
+     * getFilteredFileContentToListUsingBufferedReader(String filePath, String startsWith, String numberReplace)
+     * getFileFullContentToListUsingScanner(String filePath)
+     * All these methods return List<String>
      * */
     @Nested
     @DisplayName("Test All Read for List Methods")
@@ -189,6 +199,172 @@ public class FileAccessTest
         @DisplayName("Test getFileFullContentInUTF8ToListUsingStream(String filePath)")
         public void testGetListMethod02(){
             assertIterableEquals(TEST_OUT_PUT_LIST, FILE_ACCESS.getFileFullContentInUTF8ToListUsingStream(TEST_FILE_LOCATION));
+        }
+
+        /**
+         * This method runs getFilteredFileContentToListUsingStream(String filePath, String startsWith, String numberReplace) methods in FileAccess class
+         * This compare for expected TEST_OUT_PUT_LIST_FILTER
+         * */
+        @Test
+        @Tag("READ")
+        @Tag("LIST")
+        @Tag("FILTER")
+        @DisplayName("Test getFilteredFileContentToListUsingStream(String filePath, String startsWith, String numberReplace)")
+        public void testGetListMethod03(){
+            assertIterableEquals(TEST_OUT_PUT_LIST_FILTER, FILE_ACCESS.getFilteredFileContentToListUsingStream(TEST_FILE_LOCATION, "Hello", "5"));
+        }
+
+        /**
+         * This method runs getFileFullContentToListUsingBufferedReader(String filePath) methods in FileAccess class
+         * This compare for expected TEST_OUT_PUT_LIST
+         * */
+        @Test
+        @Tag("READ")
+        @Tag("LIST")
+        @DisplayName("Test getFileFullContentToListUsingBufferedReader(String filePath)")
+        public void testGetListMethod04(){
+            assertIterableEquals(TEST_OUT_PUT_LIST, FILE_ACCESS.getFileFullContentToListUsingBufferedReader(TEST_FILE_LOCATION));
+        }
+
+        /**
+         * This method runs getFilteredFileContentToListUsingBufferedReader(String filePath, String startsWith, String numberReplace) methods in FileAccess class
+         * This compare for expected TEST_OUT_PUT_LIST_FILTER
+         * */
+        @Test
+        @Tag("READ")
+        @Tag("LIST")
+        @Tag("FILTER")
+        @DisplayName("Test getFilteredFileContentToListUsingBufferedReader(String filePath, String startsWith, String numberReplace)")
+        public void testGetListMethod05(){
+            assertIterableEquals(TEST_OUT_PUT_LIST_FILTER, FILE_ACCESS.getFilteredFileContentToListUsingBufferedReader(TEST_FILE_LOCATION, "Hello", "5"));
+        }
+
+        /**
+         * This method runs getFileFullContentToListUsingScanner(String filePath) methods in FileAccess class
+         * This compare for expected TEST_OUT_PUT_LIST
+         * */
+        @Test
+        @Tag("READ")
+        @Tag("LIST")
+        @DisplayName("Test getFileFullContentToListUsingScanner(String filePath)")
+        public void testGetListMethod06(){
+            assertIterableEquals(TEST_OUT_PUT_LIST, FILE_ACCESS.getFileFullContentToListUsingScanner(TEST_FILE_LOCATION));
+        }
+    }
+
+    /**
+     * This method runs all get file content in to single String Object methods in FileAccess class
+     * getFileFullContentInAllBytesToString(String filePath)
+     * getFileFullContentInUTF8ToStringBuilderUsingStream(String filePath)
+     * getFileFullContentInUTF8ToStringBuilderUsingReadAllLines(String filePath)
+     * getFileFullContentInUTF8ToStringBuilderUsingInputStream(String filePath, String startsWith, String numberReplace)
+     * getFileAllCharactersToString(String filePath)
+     * readFromInputStream(InputStream inputStream)
+     * All these methods return String or StringBuilder Object
+     * */
+    @Nested
+    @DisplayName("Test All Read for Single String Methods")
+    class TestGetString{
+
+        /**
+         * This method runs getFileFullContentInAllBytesToString(String filePath) methods in FileAccess class
+         * This compare for expected TEST_OUT_PUT_STRING
+         * */
+        @Test
+        @Tag("READ")
+        @Tag("SINGLE")
+        @DisplayName("Test getFileFullContentInAllBytesToString(String filePath)")
+        public void testGetListMethod01(){
+            assertEquals(
+                    TEST_OUT_PUT_STRING,
+                    FILE_ACCESS.getFileFullContentInAllBytesToString(TEST_FILE_LOCATION),
+                    () -> "Expected ====> \n"+TEST_OUT_PUT_STRING+" \n but result is ====> \n"+FILE_ACCESS.getFileFullContentInAllBytesToString(TEST_FILE_LOCATION));
+        }
+
+        /**
+         * This method runs getFileFullContentInUTF8ToStringBuilderUsingStream(String filePath) methods in FileAccess class
+         * This compare for expected TEST_OUT_PUT_STRING
+         * */
+        @Test
+        @Tag("READ")
+        @Tag("SINGLE")
+        @DisplayName("Test getFileFullContentInUTF8ToStringBuilderUsingStream(String filePath)")
+        public void testGetListMethod02(){
+            assertEquals(
+                    TEST_OUT_PUT_STRING,
+                    FILE_ACCESS
+                            .getFileFullContentInUTF8ToStringBuilderUsingStream(TEST_FILE_LOCATION)
+                            .toString()
+                            .trim());
+        }
+
+        /**
+         * This method runs getFileFullContentInUTF8ToStringBuilderUsingReadAllLines(String filePath) methods in FileAccess class
+         * This compare for expected TEST_OUT_PUT_STRING
+         * */
+        @Test
+        @Tag("READ")
+        @Tag("SINGLE")
+        @DisplayName("Test getFileFullContentInUTF8ToStringBuilderUsingReadAllLines(String filePath)")
+        public void testGetListMethod03(){
+            assertEquals(
+                    TEST_OUT_PUT_STRING,
+                    FILE_ACCESS
+                            .getFileFullContentInUTF8ToStringBuilderUsingReadAllLines(TEST_FILE_LOCATION)
+                            .toString()
+                            .trim());
+        }
+
+        /**
+         * This method runs getFileFullContentInUTF8ToStringBuilderUsingInputStream(String filePath, String startsWith, String numberReplace) methods in FileAccess class
+         * This compare for expected TEST_OUT_PUT_STRING
+         * */
+        @Test
+        @Tag("READ")
+        @Tag("SINGLE")
+        @Tag("FILTER")
+        @DisplayName("Test getFileFullContentInUTF8ToStringBuilderUsingInputStream(String filePath, String startsWith, String numberReplace)")
+        public void testGetListMethod04(){
+            assertEquals(
+                    TEST_OUT_PUT_STRING_FILTER,
+                    FILE_ACCESS
+                            .getFileFullContentInUTF8ToStringBuilderUsingInputStream(TEST_FILE_LOCATION, "Hello", "5")
+                            .toString()
+                            .trim());
+        }
+
+        /**
+         * This method runs getFileAllCharactersToString(String filePath) methods in FileAccess class
+         * This compare for expected TEST_OUT_PUT_STRING
+         * */
+        @Test
+        @Tag("READ")
+        @Tag("SINGLE")
+        @DisplayName("Test getFileAllCharactersToString(String filePath)")
+        public void testGetListMethod05(){
+            assertEquals(TEST_OUT_PUT_STRING, FILE_ACCESS.getFileAllCharactersToString(TEST_FILE_LOCATION));
+        }
+
+        /**
+         * This method runs readFromInputStream(InputStream inputStream) methods in FileAccess class
+         * This compare for expected TEST_OUT_PUT_STRING
+         * */
+        @Test
+        @Tag("READ")
+        @Tag("SINGLE")
+        @DisplayName("Test readFromInputStream(InputStream inputStream)")
+        public void testGetListMethod06(){
+            try {
+                assertEquals(
+                        TEST_OUT_PUT_STRING,
+                        FILE_ACCESS
+                                .readFromInputStream(new FileInputStream(TEST_FILE_LOCATION))
+                                .toString()
+                                .trim());
+            } catch (FileNotFoundException e) {
+                LOGGER.error(ExceptionUtils.getMessage(e));
+                e.printStackTrace();
+            }
         }
     }
 
@@ -220,22 +396,66 @@ public class FileAccessTest
 
     }
 
+//    @Test
+//    public void givenFileNameAsAbsolutePath_whenUsingClasspath_thenFileData() {
+//        String expectedData = "Hello, world!";
+//        FileAccess fileAccess = new FileAccess();
+//
+//        Class clazz = FileAccess.class;
+////        InputStream inputStream = clazz.getResourceAsStream("/MOD_1.txt");
+//        InputStream inputStream = null;
+//        try {
+//            inputStream = new FileInputStream("D:\\SLMORAWorkSpace\\IntelliJProjects\\MoraJavaFileAccess\\src\\main\\java\\com\\slmora\\morajavafileaccess\\MOD_1.txt");
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//        String data = fileAccess.readFromInputStream(inputStream);
+//
+//        assertEquals(data, expectedData);
+//    }
+
+    /**
+     * This method runs readFromInputStream(InputStream inputStream) methods in FileAccess class
+     * This compare for expected TEST_OUT_PUT_STRING
+     * */
     @Test
-    public void givenFileNameAsAbsolutePath_whenUsingClasspath_thenFileData() {
-        String expectedData = "Hello, world!";
-        FileAccess fileAccess = new FileAccess();
-
-        Class clazz = FileAccess.class;
-//        InputStream inputStream = clazz.getResourceAsStream("/MOD_1.txt");
-        InputStream inputStream = null;
-        try {
-            inputStream = new FileInputStream("D:\\SLMORAWorkSpace\\IntelliJProjects\\MoraJavaFileAccess\\src\\main\\java\\com\\slmora\\morajavafileaccess\\MOD_1.txt");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        String data = fileAccess.readFromInputStream(inputStream);
-
-        assertEquals(data, expectedData);
+    @Tag("READ")
+    @Tag("SINGLE")
+    @DisplayName("Test getResourceAsStream")
+    public void givenFileNameAsAbsolutePath_whenUsingClasspath_thenFileData(){
+//        try {
+            Class clazz = FileAccess.class;
+            InputStream inputStream = clazz.getResourceAsStream("MOD_1.txt");
+//            assertEquals(
+//                    TEST_OUT_PUT_STRING,
+//                    FILE_ACCESS
+//                            .readFromInputStream(new FileInputStream(TEST_FILE_LOCATION))
+//                            .toString()
+//                            .trim());
+//            assertEquals(
+//                    TEST_OUT_PUT_STRING,
+//                    FILE_ACCESS
+//                            .readFromInputStream(new FileInputStream(TEST_FILE_LOCATION))
+//                            .toString()
+//                            .trim());
+            assertAll(
+                    () -> assertEquals(
+                            TEST_OUT_PUT_STRING,
+                            FILE_ACCESS
+                                    .readFromInputStream(new FileInputStream(TEST_FILE_LOCATION))
+                                    .toString()
+                                    .trim()),
+                    () -> assertEquals(
+                            TEST_OUT_PUT_STRING,
+                            FILE_ACCESS
+                                    .readFromInputStream(new FileInputStream(TEST_FILE_LOCATION))
+                                    .toString()
+                                    .trim())
+            );
+//        } catch (FileNotFoundException e) {
+//            LOGGER.error(ExceptionUtils.getMessage(e));
+//            e.printStackTrace();
+//        }
     }
 
 }
