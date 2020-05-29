@@ -260,6 +260,8 @@ public class FileAccessTest
      * getFileFullContentInUTF8ToStringBuilderUsingInputStream(String filePath, String startsWith, String numberReplace)
      * getFileAllCharactersToString(String filePath)
      * readFromInputStream(InputStream inputStream)
+     * getFileFullContentToStringUsingFileUtilsReadFile(String fileName)
+     * getFileFullContentToStringUsingIOUtilsReadFile(String filePath)
      * All these methods return String or StringBuilder Object
      * */
     @Nested
@@ -366,6 +368,36 @@ public class FileAccessTest
                 e.printStackTrace();
             }
         }
+
+        /**
+         * This method runs getFileFullContentToStringUsingFileUtilsReadFile(String fileName) methods in FileAccess class
+         * This compare for expected TEST_OUT_PUT_STRING
+         * */
+        @Test
+        @Tag("READ")
+        @Tag("SINGLE")
+        @DisplayName("Test getFileFullContentToStringUsingFileUtilsReadFile(String fileName)")
+        public void testGetListMethod07(){
+            assertEquals(
+                    TEST_OUT_PUT_STRING,
+                    FILE_ACCESS
+                            .getFileFullContentToStringUsingFileUtilsReadFile("MOD_1.txt"));
+        }
+
+        /**
+         * This method runs getFileFullContentToStringUsingIOUtilsReadFile(String filePath) methods in FileAccess class
+         * This compare for expected TEST_OUT_PUT_STRING
+         * */
+        @Test
+        @Tag("READ")
+        @Tag("SINGLE")
+        @DisplayName("Test getFileFullContentToStringUsingIOUtilsReadFile(String filePath)")
+        public void testGetListMethod08(){
+            assertEquals(
+                    TEST_OUT_PUT_STRING,
+                    FILE_ACCESS
+                            .getFileFullContentToStringUsingIOUtilsReadFile(TEST_FILE_LOCATION));
+        }
     }
 
     /**
@@ -420,29 +452,15 @@ public class FileAccessTest
      * */
     @Test
     @Tag("READ")
-    @Tag("SINGLE")
-    @DisplayName("Test getResourceAsStream")
-    public void givenFileNameAsAbsolutePath_whenUsingClasspath_thenFileData(){
-//        try {
-            Class clazz = FileAccess.class;
-            InputStream inputStream = clazz.getResourceAsStream("MOD_1.txt");
-//            assertEquals(
-//                    TEST_OUT_PUT_STRING,
-//                    FILE_ACCESS
-//                            .readFromInputStream(new FileInputStream(TEST_FILE_LOCATION))
-//                            .toString()
-//                            .trim());
-//            assertEquals(
-//                    TEST_OUT_PUT_STRING,
-//                    FILE_ACCESS
-//                            .readFromInputStream(new FileInputStream(TEST_FILE_LOCATION))
-//                            .toString()
-//                            .trim());
+    @Tag("RESOURCE")
+    @DisplayName("Test getClass().getClassLoader().getResourceAsStream()")
+    public void givenFileNameAsAbsolutePathUsingClasspathFileData(){
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream("MOD_1.txt");
             assertAll(
                     () -> assertEquals(
                             TEST_OUT_PUT_STRING,
                             FILE_ACCESS
-                                    .readFromInputStream(new FileInputStream(TEST_FILE_LOCATION))
+                                    .readFromInputStream(inputStream)
                                     .toString()
                                     .trim()),
                     () -> assertEquals(
@@ -452,10 +470,20 @@ public class FileAccessTest
                                     .toString()
                                     .trim())
             );
-//        } catch (FileNotFoundException e) {
-//            LOGGER.error(ExceptionUtils.getMessage(e));
-//            e.printStackTrace();
-//        }
+    }
+
+    /**
+     * This method runs readFromInputStream(InputStream inputStream) methods in FileAccess class
+     * This compare for expected TEST_OUT_PUT_STRING
+     * */
+    @Test
+    @Tag("READ")
+    @Tag("RESOURCE")
+    @DisplayName("Test Property File Read getClass().getClassLoader().getResourceAsStream()")
+    public void givenPropertyFileFromResource(){
+        assertEquals(
+                TEST_FILE_LOCATION,
+                FILE_ACCESS.getPropertyValueFromThisPropertyFile("config.properties","MORA.filepath"));
     }
 
 }

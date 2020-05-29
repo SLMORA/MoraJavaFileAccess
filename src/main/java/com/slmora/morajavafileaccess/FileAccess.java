@@ -5,6 +5,8 @@
  */
 package com.slmora.morajavafileaccess;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
@@ -16,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -299,6 +302,53 @@ public class FileAccess
     }
 
     /**
+     * Read file in given path and return it with String object
+     * This allow upto Java 7
+     *
+     * @param filePath as String Object with location of filter file
+     * @return String Object will return with file content
+     * @throws IOException with file notfound aor compatibility issue
+     * @apiNote Read file and collect full content in to one String Object
+     */
+    public String getFileFullContentToStringUsingFileUtilsReadFile(String fileName)
+    {
+        String content = null;
+        try {
+            ClassLoader classLoader = getClass().getClassLoader();
+            File file = new File(classLoader.getResource(fileName).getFile());
+            content = FileUtils.readFileToString(file, "UTF-8");
+        } catch (IOException e) {
+            LOGGER.error(ExceptionUtils.getFullStackTrace(e));
+            e.printStackTrace();
+        }finally {
+            return content;
+        }
+    }
+
+    /**
+     * Read file in given path and return it with String object
+     * This allow upto Java 7
+     *
+     * @param filePath as String Object with location of filter file
+     * @return String Object will return with file content
+     * @throws IOException with file notfound aor compatibility issue
+     * @apiNote Read file and collect full content in to one String Object
+     */
+    public String getFileFullContentToStringUsingIOUtilsReadFile(String filePath)
+    {
+        String content = null;
+        try {
+            InputStream iStream = new FileInputStream(filePath);
+            content = IOUtils.toString(iStream, "UTF-8");
+        } catch (IOException e) {
+            LOGGER.error(ExceptionUtils.getFullStackTrace(e));
+            e.printStackTrace();
+        }finally {
+            return content;
+        }
+    }
+
+    /**
      * Read file with UTF-8 encoding in given path and return it with StringBuilder object
      *
      * @param filePath as String Object with location of filter file
@@ -444,6 +494,32 @@ public class FileAccess
 //            return contentBuilder;
 //        }
 
+    }
+
+    /**
+     * Read Given property form given property file in resource
+     *
+     * @param propertyFile as String Object with location of filter file
+     * @return String Object will return with file content
+     * @throws IOException with file notfound aor compatibility issue
+     * @apiNote Read file and all characters content in to one String Object
+     * @Note Files.lines() method doesn't include line-termination character. If we want to read all text from a file
+     * in to a String we can use this
+     */
+    public String getPropertyValueFromThisPropertyFile(String propertyFile, String propertyRef)
+    {
+        Properties properties = new Properties();
+        String property = null;
+        //read file into BufferedReader, try-with-resources
+        try (InputStream iStream = getClass().getClassLoader().getResourceAsStream(propertyFile)){
+            properties.load(iStream);
+            property = properties.getProperty(propertyRef);
+        } catch (IOException e) {
+            LOGGER.error(ExceptionUtils.getFullStackTrace(e));
+            e.printStackTrace();
+        } finally {
+            return property;
+        }
     }
 }
 /**
