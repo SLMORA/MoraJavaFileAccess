@@ -13,6 +13,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -433,6 +437,63 @@ public class FileAccess
     }
 
     /**
+     * Read file with UTF-8 encoding in given path and return it with StringBuilder object
+     *
+     * @param filePath as String Object with location of filter file
+     * @return List<String> Object will return with file content
+     * @throws IOException with file notfound aor compatibility issue
+     * @apiNote Read file and collect full content in to StringBuilder using Stream
+     */
+    public String getFileFullContentToStringBuilderUsingDataInputStream(String filePath)
+    {
+        String content = null;
+
+        try (DataInputStream dataInputStream = new DataInputStream(new FileInputStream(filePath))){
+            int nBytesToRead = dataInputStream.available();
+            if(nBytesToRead > 0) {
+                byte[] bytes = new byte[nBytesToRead];
+                dataInputStream.read(bytes);
+                content = new String(bytes);
+            }
+        } catch (IOException e) {
+            LOGGER.error(ExceptionUtils.getFullStackTrace(e));
+            e.printStackTrace();
+        }finally {
+            return content;
+        }
+    }
+
+    /**
+     * Read file with UTF-8 encoding in given path and return it with StringBuilder object
+     *
+     * @param filePath as String Object with location of filter file
+     * @return List<String> Object will return with file content
+     * @throws IOException with file notfound aor compatibility issue
+     * @apiNote Read file and collect full content in to StringBuilder using Stream
+     */
+    public String getFileFullContentToStringUsingFileChanel(String filePath)
+    {
+        String content = null;
+
+        try (RandomAccessFile accessFile = new RandomAccessFile(filePath, "r");
+             FileChannel channel = accessFile.getChannel()){
+            int bufferSize = 1024;
+            if (bufferSize > channel.size()) {
+                bufferSize = (int) channel.size();
+            }
+            ByteBuffer buff = ByteBuffer.allocate(bufferSize);
+            channel.read(buff);
+            buff.flip();
+            content = new String(buff.array());
+        } catch (IOException e) {
+            LOGGER.error(ExceptionUtils.getFullStackTrace(e));
+            e.printStackTrace();
+        }finally {
+            return content;
+        }
+    }
+
+    /**
      * Read file in given path and return it with String object
      * This allow upto Java 8
      *
@@ -454,6 +515,34 @@ public class FileAccess
             e.printStackTrace();
         } finally {
             return content;
+        }
+    }
+
+    /**
+     * Read file in given path and return it with String object
+     * This allow upto Java 8
+     *
+     * @param urlPath as String Object with location of filter file
+     * @return String Object will return with file content
+     * @throws IOException with file notfound aor compatibility issue
+     * @apiNote Read file and all characters content in to one String Object
+     * @Note Files.lines() method doesn't include line-termination character. If we want to read all text from a file
+     * in to a String we can use this
+     */
+    public StringBuilder getContentFromURL(String urlPath)
+    {
+        StringBuilder resultStringBuilder = new StringBuilder();
+        //read file into BufferedReader, try-with-resources
+        try {
+            URL urlObject = new URL(urlPath);
+            URLConnection urlConnection = urlObject.openConnection();
+            InputStream inputStream = urlConnection.getInputStream();
+            resultStringBuilder = readFromInputStream(inputStream);
+        } catch (IOException e) {
+            LOGGER.error(ExceptionUtils.getFullStackTrace(e));
+            e.printStackTrace();
+        } finally {
+            return resultStringBuilder;
         }
     }
 

@@ -262,6 +262,8 @@ public class FileAccessTest
      * readFromInputStream(InputStream inputStream)
      * getFileFullContentToStringUsingFileUtilsReadFile(String fileName)
      * getFileFullContentToStringUsingIOUtilsReadFile(String filePath)
+     * getFileFullContentToStringBuilderUsingDataInputStream(String filePath)
+     * getFileFullContentToStringUsingFileChanel(String filePath)
      * All these methods return String or StringBuilder Object
      * */
     @Nested
@@ -398,6 +400,36 @@ public class FileAccessTest
                     FILE_ACCESS
                             .getFileFullContentToStringUsingIOUtilsReadFile(TEST_FILE_LOCATION));
         }
+
+        /**
+         * This method runs getFileFullContentToStringBuilderUsingDataInputStream(String filePath) methods in FileAccess class
+         * This compare for expected TEST_OUT_PUT_STRING
+         * */
+        @Test
+        @Tag("READ")
+        @Tag("SINGLE")
+        @DisplayName("Test getFileFullContentToStringBuilderUsingDataInputStream(String filePath)")
+        public void testGetListMethod09(){
+            assertEquals(
+                    TEST_OUT_PUT_STRING,
+                    FILE_ACCESS
+                            .getFileFullContentToStringBuilderUsingDataInputStream(TEST_FILE_LOCATION));
+        }
+
+        /**
+         * This method runs getFileFullContentToStringUsingFileChanel(String filePath) methods in FileAccess class
+         * This compare for expected TEST_OUT_PUT_STRING
+         * */
+        @Test
+        @Tag("READ")
+        @Tag("SINGLE")
+        @DisplayName("Test getFileFullContentToStringUsingFileChanel(String filePath)")
+        public void testGetListMethod10(){
+            assertEquals(
+                    TEST_OUT_PUT_STRING,
+                    FILE_ACCESS
+                            .getFileFullContentToStringUsingFileChanel(TEST_FILE_LOCATION));
+        }
     }
 
     /**
@@ -484,6 +516,28 @@ public class FileAccessTest
         assertEquals(
                 TEST_FILE_LOCATION,
                 FILE_ACCESS.getPropertyValueFromThisPropertyFile("config.properties","MORA.filepath"));
+    }
+
+    @Test
+    public void whenReadWithStreamTokenizer_thenCorrectTokens()
+            throws IOException {
+        FileReader reader = new FileReader(TEST_FILE_LOCATION);
+        StreamTokenizer tokenizer = new StreamTokenizer(reader);
+
+        // token 1
+        tokenizer.nextToken();
+        assertEquals(StreamTokenizer.TT_WORD, tokenizer.ttype);
+        assertEquals("hi", tokenizer.sval);
+
+        // token 2
+        tokenizer.nextToken();
+        assertEquals(StreamTokenizer.TT_NUMBER, tokenizer.ttype);
+        assertEquals(1, tokenizer.nval, 0.0000001);
+
+        // token 3
+        tokenizer.nextToken();
+        assertEquals(StreamTokenizer.TT_EOF, tokenizer.ttype);
+        reader.close();
     }
 
 }
