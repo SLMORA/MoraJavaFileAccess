@@ -278,6 +278,7 @@ public class FileAccessTest
         @Tag("READ")
         @Tag("SINGLE")
         @DisplayName("Test getFileFullContentInAllBytesToString(String filePath)")
+        @Disabled
         public void testGetListMethod01(){
             assertEquals(
                     TEST_OUT_PUT_STRING,
@@ -345,6 +346,7 @@ public class FileAccessTest
         @Tag("READ")
         @Tag("SINGLE")
         @DisplayName("Test getFileAllCharactersToString(String filePath)")
+        @Disabled
         public void testGetListMethod05(){
             assertEquals(TEST_OUT_PUT_STRING, FILE_ACCESS.getFileAllCharactersToString(TEST_FILE_LOCATION));
         }
@@ -379,6 +381,7 @@ public class FileAccessTest
         @Tag("READ")
         @Tag("SINGLE")
         @DisplayName("Test getFileFullContentToStringUsingFileUtilsReadFile(String fileName)")
+        @Disabled
         public void testGetListMethod07(){
             assertEquals(
                     TEST_OUT_PUT_STRING,
@@ -394,6 +397,7 @@ public class FileAccessTest
         @Tag("READ")
         @Tag("SINGLE")
         @DisplayName("Test getFileFullContentToStringUsingIOUtilsReadFile(String filePath)")
+        @Disabled
         public void testGetListMethod08(){
             assertEquals(
                     TEST_OUT_PUT_STRING,
@@ -409,6 +413,7 @@ public class FileAccessTest
         @Tag("READ")
         @Tag("SINGLE")
         @DisplayName("Test getFileFullContentToStringBuilderUsingDataInputStream(String filePath)")
+        @Disabled
         public void testGetListMethod09(){
             assertEquals(
                     TEST_OUT_PUT_STRING,
@@ -424,6 +429,7 @@ public class FileAccessTest
         @Tag("READ")
         @Tag("SINGLE")
         @DisplayName("Test getFileFullContentToStringUsingFileChanel(String filePath)")
+        @Disabled
         public void testGetListMethod10(){
             assertEquals(
                     TEST_OUT_PUT_STRING,
@@ -438,6 +444,7 @@ public class FileAccessTest
      * */
     @Test
     @DisplayName("Test PrintWriter.close() option to clear the file")
+    @Disabled
 //    @EnabledOnJre(JRE.JAVA_14)
     public void testPrintWriterClose(){
         List<String> list = new ArrayList<>();
@@ -519,6 +526,7 @@ public class FileAccessTest
     }
 
     @Test
+    @Disabled
     public void whenReadWithStreamTokenizer_thenCorrectTokens()
             throws IOException {
         FileReader reader = new FileReader(TEST_FILE_LOCATION);

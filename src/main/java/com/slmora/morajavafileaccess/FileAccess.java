@@ -309,7 +309,7 @@ public class FileAccess
      * Read file in given path and return it with String object
      * This allow upto Java 7
      *
-     * @param filePath as String Object with location of filter file
+     * @param fileName as String Object with location of filter file
      * @return String Object will return with file content
      * @throws IOException with file notfound aor compatibility issue
      * @apiNote Read file and collect full content in to one String Object
